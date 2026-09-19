@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Career History & Professional Network Survey</title>
+<style>
+  :root {
+    --ink: #1c2b3a;
+    --ink-soft: #4a5b6b;
+    --ink-faint: #8a97a3;
+    --line: #d9e0e6;
+    --line-soft: #eaeef1;
+    --paper: #fbfaf7;
+    --card: #ffffff;
+    --accent: #2f5d62;
+    --accent-soft: #e7f0ef;
+    --accent-deep: #1e4448;
+    --danger: #a3402f;
+    --danger-soft: #fbeae6;
+    --radius: 10px;
+    font-family: "Iowan Old Style", "Palatino Linotype", "Georgia", serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  .masthead {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 8px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .subhead {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 56ch;
+  }
+
+  .progress-rail {
+    display: flex;
+    gap: 6px;
+    margin: 24px 0 40px;
+  }
+  .progress-seg {
+    flex: 1;
+    height: 3px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-seg.done { background: var(--accent); }
+
+  section.step {
+    display: none;
+  }
+  section.step.active { display: block; }
+
+  .step-label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+  h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  p.lead {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin: 0 0 24px;
+    max-width: 60ch;
+  }
+
+  .consent-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 18px;
+  }
+  .consent-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 14px;
+  }
+  .consent-item:last-child { border-bottom: none; }
+  .consent-item .tag {
+    flex-shrink: 0;
+    width: 96px;
+    font-weight: 700;
+    color: var(--accent-deep);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .consent-item .txt { color: var(--ink-soft); }
+
+  .agree-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--accent-soft);
+    border: 1px solid #cfe2df;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-top: 18px;
+  }
+  .agree-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+  }
+  .agree-row label {
+    font-size: 14px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .field .hint {
+    font-weight: 400;
+    color: var(--ink-faint);
+    font-size: 12px;
+  }
+  input[type="text"], input[type="email"], input[type="month"], input[type="password"], select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--ink);
+    font-family: inherit;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .other-input { margin-top: 8px; display: none; }
+  .other-input.show { display: block; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) {
+    .row2, .row3 { grid-template-columns: 1fr; }
+  }
+
+  .status-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--card);
+    color: var(--ink-soft);
+  }
+  .pill.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-weight: 600;
+  }
+
+  .entry-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    background: var(--card);
+    position: relative;
+  }
+  .entry-card.has-error { border-color: var(--danger); }
+  .entry-card .entry-num {
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+  }
+  .entry-remove {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--ink-faint);
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .entry-remove:hover { color: var(--danger); }
+
+  .add-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--accent-deep);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 24px;
+  }
+  .add-btn:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  .btn {
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+  }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn.primary:hover { background: var(--accent-deep); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn.ghost { border-color: transparent; color: var(--ink-faint); }
+
+  .error-msg {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 6px;
+    display: none;
+  }
+  .error-msg.show { display: block; }
+  .field.has-error input, .field.has-error select {
+    border-color: var(--danger);
+  }
+
+  .confirm-wrap {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .confirm-mark {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 26px;
+  }
+  .confirm-id {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 8px 14px;
+    background: var(--line-soft);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: monospace;
+  }
+
+  .step-review-block {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    background: var(--card);
+    font-size: 13.5px;
+  }
+  .step-review-block h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-deep);
+  }
+  .step-review-block .kv { display: flex; justify-content: space-between; padding: 3px 0; color: var(--ink-soft); gap: 12px; }
+  .step-review-block .kv span { flex-shrink: 0; }
+  .step-review-block .kv b { color: var(--ink); font-weight: 600; text-align: right; }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 40px;
+  }
+  .admin-link {
+    text-align: center;
+    margin-top: 14px;
+  }
+  .admin-link a {
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--ink-faint);
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <p class="eyebrow">Master's thesis research</p>
+    <h1>Career history & professional network survey</h1>
+    <p class="subhead">Your responses help build a research dataset for a thesis on predicting career transitions. This should take about 4–6 minutes.</p>
+  </div>
+
+  <div class="progress-rail" id="progressRail"></div>
+
+  <form id="surveyForm">
+
+    <section class="step active" data-step="0">
+      <p class="step-label">Step 1 of 5</p>
+      <h2>Before you begin</h2>
+      <p class="lead">Please read this before filling in your information.</p>
+
+      <div class="consent-card">
+        <div class="consent-item"><div class="tag">Voluntary</div><div class="txt">Participation is entirely optional. You can skip any question or stop at any point.</div></div>
+        <div class="consent-item"><div class="tag">Purpose</div><div class="txt">Your data is used only for academic research — training and evaluating a thesis model. It will not be shared with employers, recruiters, or third parties.</div></div>
+        <div class="consent-item"><div class="tag">Identifiable</div><div class="txt">Your name and email are stored together with your responses, so the researcher can follow up if needed. They are kept confidential and used only for this research.</div></div>
+        <div class="consent-item"><div class="tag">Storage</div><div class="txt">Data is stored securely and deleted once the thesis is completed and examined, unless you ask for earlier deletion.</div></div>
+        <div class="consent-item"><div class="tag">Contact</div><div class="txt">Questions or withdrawal requests: <span id="contactEmailDisplay">[researcher email]</span></div></div>
+      </div>
+
+      <div class="agree-row">
+        <input type="checkbox" id="consentCheck" />
+        <label for="consentCheck">I'm participating voluntarily and understand how my data will be used, as described above.</label>
+      </div>
+      <p class="error-msg" id="consentError">Please confirm you agree before continuing.</p>
+    </section>
+
+    <section class="step" data-step="1">
+      <p class="step-label">Step 2 of 5</p>
+      <h2>About you</h2>
+      <p class="lead">Basic details to identify your responses. Your name and email are stored with your answers and each email may only submit once.</p>
+
+      <div class="field">
+        <label for="fullName">Full name or preferred alias</label>
+        <input type="text" id="fullName" placeholder="e.g. Amira H." />
+        <p class="error-msg" id="fullNameError">Please enter a name or alias.</p>
+      </div>
+      <div class="field">
+        <label for="email">Email <span class="hint">(each email may only submit once)</span></label>
+        <input type="email" id="email" placeholder="name@example.com" />
+        <p class="error-msg" id="emailRequiredError">Please enter your email.</p>
+        <p class="error-msg" id="emailFormatError">Please enter a valid email address.</p>
+        <p class="error-msg" id="emailDupError">This email has already been used to submit a response.</p>
+      </div>
+      <div class="field">
+        <label>Current employment status</label>
+        <div class="status-pills" id="statusPills">
+          <div class="pill" data-value="Employed">Employed</div>
+          <div class="pill" data-value="Between jobs">Between jobs</div>
+          <div class="pill" data-value="Student">Student</div>
+          <div class="pill" data-value="Other">Other</div>
+        </div>
+        <p class="error-msg" id="statusError">Please select your current status.</p>
+      </div>
+      <div class="field">
+        <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+          <input type="checkbox" id="ownerCheck" style="width:16px; height:16px; accent-color: var(--accent); flex-shrink:0;" />
+          <span>I am an owner or shareholder of a company</span>
+        </label>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="birthYear">Birth year</label>
+          <input type="number" id="birthYear" placeholder="e.g. 1995" min="1930" max="2026" step="1" />
+          <p class="error-msg" id="birthYearError">Please enter your birth year.</p>
+        </div>
+        <div class="field">
+          <label for="genderSelect">Gender</label>
+          <select id="genderSelect">
+            <option value="">Select</option>
+            <option>Female</option>
+            <option>Male</option>
+          </select>
+          <input type="text" id="genderOther" class="other-input" placeholder="Type here" />
+          <p class="error-msg" id="genderError">Please select your gender.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="step" data-step="2">
+      <p class="step-label">Step 3 of 5</p>
+      <h2>Education history</h2>
+      <p class="lead">List your degrees or programs in order, including graduation dates. Choose your institution from the list, or select "Other" to type it in.</p>
+      <div id="educationList"></div>
+      <button type="button" class="add-btn" id="addEducation">+ Add education entry</button>
+    </section>
+
+    <section class="step" data-step="3">
+      <p class="step-label">Step 4 of 5</p>
+      <h2>Employment history</h2>
+      <p class="lead">List every company you've worked at, in chronological order. Month and year is enough for dates — leave the end date blank if it's your current role. At least one complete entry is needed.</p>
+      <div id="employmentList"></div>
+      <button type="button" class="add-btn" id="addEmployment">+ Add employment entry</button>
+      <p class="error-msg" id="employmentError">Please add at least one complete employment entry (company, title, start date, city, country, and type).</p>
+
+      <div class="field" style="margin-top: 8px;">
+        <label for="notes">Additional notes <span class="hint">(optional)</span></label>
+        <textarea id="notes" placeholder="Career gaps, freelance periods, anything else relevant."></textarea>
+      </div>
+    </section>
+
+    <section class="step" data-step="4">
+      <p class="step-label">Step 5 of 5</p>
+      <h2>Review & submit</h2>
+      <p class="lead">Take a moment to check everything looks right before submitting.</p>
+      <div id="reviewArea"></div>
+    </section>
+
+  </form>
+
+  <div class="nav-row" id="navRow">
+    <button type="button" class="btn ghost" id="backBtn">Back</button>
+    <button type="button" class="btn primary" id="nextBtn">Continue</button>
+  </div>
+
+  <div id="confirmArea" style="display:none;"></div>
+
+  <p class="footer-note">Your responses, including name and email, are kept confidential and used only for this research.</p>
+</div>
+
+<script>
+(function() {
+  // ---- Researcher configuration — edit before hosting ----
+  var RESEARCHER_EMAIL = "sohaila_abdelradi@aucegypt.edu";
+  var WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxGUciNWPYBSydsmERzFddUkBvyaybpPJYjbLCyG9EAjv4cX7of-ltAaeIKORCKy9UyaQ/exec";
+  // -----------------------------------------------------------------------
+
+  document.getElementById('contactEmailDisplay').textContent = RESEARCHER_EMAIL;
+
+  var TOTAL_STEPS = 5;
+  var currentStep = 0;
+  var eduCount = 0, empCount = 0;
+  var selectedStatus = null;
+
+  var COUNTRIES = ["Egypt","United States","United Kingdom","Germany","France","Italy","Spain","Portugal","Netherlands","Belgium","Switzerland","Austria","Sweden","Norway","Denmark","Finland","Ireland","Poland","Czechia","Greece","Turkey","Russia","Ukraine","Saudi Arabia","United Arab Emirates","Qatar","Kuwait","Bahrain","Oman","Jordan","Lebanon","Iraq","Israel","Libya","Tunisia","Algeria","Morocco","Sudan","Ethiopia","Kenya","Nigeria","South Africa","Ghana","India","Pakistan","Bangladesh","China","Japan","South Korea","Singapore","Malaysia","Indonesia","Philippines","Vietnam","Thailand","Australia","New Zealand","Canada","Mexico","Brazil","Argentina","Chile","Colombia","Peru"];
+  var CITIES = ["Cairo","Giza","Alexandria","Mansoura","Tanta","Ismailia","Port Said","Suez","Luxor","Aswan","Sharm El Sheikh","Hurghada","6th of October City","New Cairo","Dubai","Abu Dhabi","Riyadh","Jeddah","Doha","Kuwait City","Manama","Muscat","Amman","Beirut","Baghdad","Tripoli","Benghazi","Tunis","Algiers","Casablanca","Rabat","Khartoum","Nairobi","Lagos","Johannesburg","London","Manchester","Berlin","Munich","Paris","Madrid","Barcelona","Rome","Milan","Amsterdam","Brussels","Zurich","Vienna","Stockholm","Oslo","Copenhagen","Warsaw","Istanbul","Moscow","New York","San Francisco","Los Angeles","Chicago","Boston","Toronto","Vancouver","Mexico City","Sao Paulo","Buenos Aires","Mumbai","Delhi","Bangalore","Karachi","Dhaka","Shanghai","Beijing","Tokyo","Seoul","Singapore","Kuala Lumpur","Jakarta","Manila","Bangkok","Sydney","Melbourne"];
+  var UNIVERSITIES = ["Cairo University","Ain Shams University","Alexandria University","Al-Azhar University","American University in Cairo","German University in Cairo","Helwan University","Mansoura University","Zagazig University","Assiut University","Tanta University","Suez Canal University","Benha University","Fayoum University","Minya University","Sohag University","Beni-Suef University","Kafrelsheikh University","Damietta University","Port Said University","South Valley University","Nile University","MSA University","Future University in Egypt","British University in Egypt","Misr International University","Arab Academy for Science, Technology and Maritime Transport","Harvard University","Massachusetts Institute of Technology","Stanford University","University of Oxford","University of Cambridge","Imperial College London","ETH Zurich","University of Toronto","University of California, Berkeley","Columbia University","New York University","University College London","King's College London","Technical University of Munich","Sorbonne University","National University of Singapore","University of Tokyo","Tsinghua University","American University of Beirut","King Fahd University of Petroleum and Minerals","United Arab Emirates University"];
+
+  function populateSelect(select, options) {
+    options.forEach(function(o) {
+      var opt = document.createElement('option');
+      opt.value = o;
+      opt.textContent = o;
+      select.appendChild(opt);
+    });
+    var other = document.createElement('option');
+    other.value = '__other__';
+    other.textContent = 'Other (please specify)';
+    select.appendChild(other);
+  }
+
+  function wireOtherToggle(select, otherInput) {
+    select.addEventListener('change', function() {
+      if (select.value === '__other__') {
+        otherInput.classList.add('show');
+      } else {
+        otherInput.classList.remove('show');
+        otherInput.value = '';
+      }
+    });
+  }
+
+  function getSelectOrOther(select, otherInput) {
+    if (select.value === '__other__') return otherInput.value.trim();
+    return select.value;
+  }
+
+  var progressRail = document.getElementById('progressRail');
+  for (var i = 0; i < TOTAL_STEPS; i++) {
+    var seg = document.createElement('div');
+    seg.className = 'progress-seg';
+    progressRail.appendChild(seg);
+  }
+
+  function updateProgress() {
+    var segs = progressRail.children;
+    for (var i = 0; i < segs.length; i++) {
+      segs[i].className = 'progress-seg' + (i <= currentStep ? ' done' : '');
+    }
+  }
+
+  function showStep(n) {
+    var steps = document.querySelectorAll('.step');
+    for (var i = 0; i < steps.length; i++) {
+      steps[i].classList.toggle('active', i === n);
+    }
+    document.getElementById('backBtn').style.visibility = n === 0 ? 'hidden' : 'visible';
+    document.getElementById('nextBtn').textContent = n === TOTAL_STEPS - 1 ? 'Submit response' : 'Continue';
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('statusPills').addEventListener('click', function(e) {
+    var pill = e.target.closest('.pill');
+    if (!pill) return;
+    var pills = document.querySelectorAll('#statusPills .pill');
+    pills.forEach(function(p) { p.classList.remove('selected'); });
+    pill.classList.add('selected');
+    selectedStatus = pill.getAttribute('data-value');
+  });
+
+  function makeEducationRow(idx) {
+    var div = document.createElement('div');
+    div.className = 'entry-card';
+    div.dataset.idx = idx;
+    div.innerHTML =
+      '<span class="entry-num">' + (idx + 1) + '</span>' +
+      '<button type="button" class="entry-remove">Remove</button>' +
+      '<div class="field"><label>Institution name</label>' +
+        '<select class="edu-institution"><option value="">Select institution</option></select>' +
+        '<input type="text" class="edu-institution-other other-input" placeholder="Type institution name" />' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Degree / program</label><input type="text" class="edu-degree" placeholder="e.g. BSc Computer Science" /></div>' +
+        '<div class="field"><label>Graduation date</label><input type="month" class="edu-graddate" /></div>' +
+      '</div>';
+    var select = div.querySelector('.edu-institution');
+    var other = div.querySelector('.edu-institution-other');
+    populateSelect(select, UNIVERSITIES);
+    wireOtherToggle(select, other);
+    div.querySelector('.entry-remove').addEventListener('click', function() {
+      div.remove();
+      renumber('educationList');
+    });
+    return div;
+  }
+
+  function makeEmploymentRow(idx) {
+    var div = document.createElement('div');
+    div.className = 'entry-card';
+    div.dataset.idx = idx;
+    div.innerHTML =
+      '<span class="entry-num">' + (idx + 1) + '</span>' +
+      '<button type="button" class="entry-remove">Remove</button>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Company name</label><input type="text" class="emp-company" placeholder="e.g. Acme Corp" /></div>' +
+        '<div class="field"><label>Job title / role</label><input type="text" class="emp-title" placeholder="e.g. Data Analyst" /></div>' +
+      '</div>' +
+      '<div class="row2">' +
+        '<div class="field"><label>Start date</label><input type="month" class="emp-start" /></div>' +
+        '<div class="field"><label>End date <span class="hint">(blank = current)</span></label><input type="month" class="emp-end" /></div>' +
+      '</div>' +
+      '<div class="row3">' +
+        '<div class="field"><label>City</label>' +
+          '<select class="emp-city"><option value="">Select city</option></select>' +
+          '<input type="text" class="emp-city-other other-input" placeholder="Type city" />' +
+        '</div>' +
+        '<div class="field"><label>Country</label>' +
+          '<select class="emp-country"><option value="">Select country</option></select>' +
+          '<input type="text" class="emp-country-other other-input" placeholder="Type country" />' +
+        '</div>' +
+        '<div class="field"><label>Employment type</label><select class="emp-type"><option value="">Select</option><option>Full-time</option><option>Part-time</option><option>Internship</option><option>Contract</option></select></div>' +
+      '</div>' +
+      '<div class="field"><label>Reason for leaving <span class="hint">(if this role has ended)</span></label><select class="emp-reason"><option value="">Select (leave blank if current)</option><option>Resigned</option><option>Laid off / downsizing</option><option>Contract ended</option><option>Retired</option><option>Career change</option><option>Relocation</option><option>Better opportunity elsewhere</option><option>Other</option></select>' +
+        '<input type="text" class="emp-reason-detail" placeholder="Add any details (optional)" style="margin-top:8px;" />' +
+      '</div>';
+    var citySelect = div.querySelector('.emp-city');
+    var cityOther = div.querySelector('.emp-city-other');
+    var countrySelect = div.querySelector('.emp-country');
+    var countryOther = div.querySelector('.emp-country-other');
+    populateSelect(citySelect, CITIES);
+    populateSelect(countrySelect, COUNTRIES);
+    wireOtherToggle(citySelect, cityOther);
+    wireOtherToggle(countrySelect, countryOther);
+    div.querySelector('.entry-remove').addEventListener('click', function() {
+      div.remove();
+      renumber('employmentList');
+    });
+    return div;
+  }
+
+  function renumber(listId) {
+    var list = document.getElementById(listId);
+    var cards = list.querySelectorAll('.entry-card');
+    cards.forEach(function(c, i) {
+      c.querySelector('.entry-num').textContent = i + 1;
+    });
+  }
+
+  document.getElementById('addEducation').addEventListener('click', function() {
+    document.getElementById('educationList').appendChild(makeEducationRow(eduCount++));
+  });
+  document.getElementById('addEmployment').addEventListener('click', function() {
+    document.getElementById('employmentList').appendChild(makeEmploymentRow(empCount++));
+  });
+
+  document.getElementById('educationList').appendChild(makeEducationRow(eduCount++));
+  document.getElementById('employmentList').appendChild(makeEmploymentRow(empCount++));
+  wireOtherToggle(document.getElementById('genderSelect'), document.getElementById('genderOther'));
+
+  function clearErrors() {
+    document.querySelectorAll('.error-msg').forEach(function(e) { e.classList.remove('show'); });
+    document.querySelectorAll('.field, .entry-card').forEach(function(f) { f.classList.remove('has-error'); });
+  }
+
+  function isValidEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  async function isEmailTaken(email) {
+    try {
+      var res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'checkEmail', email: email })
+      });
+      var json = await res.json();
+      return !!(json && json.taken);
+    } catch (e) {
+      return false; // fail open — the server also re-checks on final submit
+    }
+  }
+
+  async function validateStep(n) {
+    clearErrors();
+
+    if (n === 0) {
+      var checked = document.getElementById('consentCheck').checked;
+      if (!checked) {
+        document.getElementById('consentError').classList.add('show');
+        return false;
+      }
+      return true;
+    }
+
+    if (n === 1) {
+      var name = document.getElementById('fullName').value.trim();
+      var ok = true;
+      if (!name) {
+        document.getElementById('fullNameError').classList.add('show');
+        document.getElementById('fullName').closest('.field').classList.add('has-error');
+        ok = false;
+      }
+      if (!selectedStatus) {
+        document.getElementById('statusError').classList.add('show');
+        ok = false;
+      }
+      var email = document.getElementById('email').value.trim();
+      if (!email) {
+        document.getElementById('emailRequiredError').classList.add('show');
+        document.getElementById('email').closest('.field').classList.add('has-error');
+        ok = false;
+      } else if (!isValidEmail(email)) {
+        document.getElementById('emailFormatError').classList.add('show');
+        document.getElementById('email').closest('.field').classList.add('has-error');
+        ok = false;
+      } else {
+        var taken = await isEmailTaken(email);
+        if (taken) {
+          document.getElementById('emailDupError').classList.add('show');
+          document.getElementById('email').closest('.field').classList.add('has-error');
+          ok = false;
+        }
+      }
+      var birthYear = document.getElementById('birthYear').value.trim();
+      if (!birthYear) {
+        document.getElementById('birthYearError').classList.add('show');
+        document.getElementById('birthYear').closest('.field').classList.add('has-error');
+        ok = false;
+      }
+      var gender = getSelectOrOther(document.getElementById('genderSelect'), document.getElementById('genderOther'));
+      if (!gender) {
+        document.getElementById('genderError').classList.add('show');
+        document.getElementById('genderSelect').closest('.field').classList.add('has-error');
+        ok = false;
+      }
+      return ok;
+    }
+
+    if (n === 3) {
+      var cards = document.querySelectorAll('#employmentList .entry-card');
+      var hasComplete = false;
+      cards.forEach(function(c) {
+        var company = c.querySelector('.emp-company').value.trim();
+        var title = c.querySelector('.emp-title').value.trim();
+        var start = c.querySelector('.emp-start').value;
+        var city = getSelectOrOther(c.querySelector('.emp-city'), c.querySelector('.emp-city-other'));
+        var country = getSelectOrOther(c.querySelector('.emp-country'), c.querySelector('.emp-country-other'));
+        var type = c.querySelector('.emp-type').value;
+        if (company && title && start && city && country && type) hasComplete = true;
+      });
+      if (!hasComplete) {
+        document.getElementById('employmentError').classList.add('show');
+        return false;
+      }
+      return true;
+    }
+
+    return true;
+  }
+
+  function collectData() {
+    var edu = [];
+    document.querySelectorAll('#educationList .entry-card').forEach(function(c) {
+      var institution = getSelectOrOther(c.querySelector('.edu-institution'), c.querySelector('.edu-institution-other'));
+      var degree = c.querySelector('.edu-degree').value.trim();
+      var grad = c.querySelector('.edu-graddate').value;
+      if (institution || degree || grad) edu.push({ institution: institution, degree: degree, graduationDate: grad });
+    });
+
+    var emp = [];
+    document.querySelectorAll('#employmentList .entry-card').forEach(function(c) {
+      var company = c.querySelector('.emp-company').value.trim();
+      var title = c.querySelector('.emp-title').value.trim();
+      var start = c.querySelector('.emp-start').value;
+      var end = c.querySelector('.emp-end').value;
+      var city = getSelectOrOther(c.querySelector('.emp-city'), c.querySelector('.emp-city-other'));
+      var country = getSelectOrOther(c.querySelector('.emp-country'), c.querySelector('.emp-country-other'));
+      var type = c.querySelector('.emp-type').value;
+      var reason = c.querySelector('.emp-reason').value;
+      var reasonDetail = c.querySelector('.emp-reason-detail').value.trim();
+      if (company || title || start) emp.push({ company: company, title: title, start: start, end: end || 'Current', city: city, country: country, type: type, reasonForLeaving: reason, reasonForLeavingDetail: reasonDetail });
+    });
+
+    return {
+      fullName: document.getElementById('fullName').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      status: selectedStatus || '',
+      isOwnerOrShareholder: document.getElementById('ownerCheck').checked,
+      dateOfBirth: document.getElementById('birthYear').value,
+      gender: getSelectOrOther(document.getElementById('genderSelect'), document.getElementById('genderOther')),
+      education: edu,
+      employment: emp,
+      notes: document.getElementById('notes').value.trim(),
+      submittedAt: new Date().toISOString()
+    };
+  }
+
+  function renderReview() {
+    var data = collectData();
+    var area = document.getElementById('reviewArea');
+    var html = '';
+
+    html += '<div class="step-review-block"><h3>About you</h3>' +
+      '<div class="kv"><span>Name</span><b>' + escapeHtml(data.fullName || '—') + '</b></div>' +
+      '<div class="kv"><span>Status</span><b>' + escapeHtml(data.status || '—') + '</b></div>' +
+      '<div class="kv"><span>Owner / shareholder</span><b>' + (data.isOwnerOrShareholder ? 'Yes' : 'No') + '</b></div>' +
+      '<div class="kv"><span>Birth year</span><b>' + escapeHtml(data.dateOfBirth || '—') + '</b></div>' +
+      '<div class="kv"><span>Gender</span><b>' + escapeHtml(data.gender || '—') + '</b></div></div>';
+
+    html += '<div class="step-review-block"><h3>Education (' + data.education.length + ')</h3>';
+    if (data.education.length === 0) html += '<div class="kv"><span>No entries added</span></div>';
+    data.education.forEach(function(e) {
+      html += '<div class="kv"><span>' + escapeHtml(e.institution || '—') + '</span><b>' + escapeHtml(e.degree || '—') + (e.graduationDate ? ' · ' + escapeHtml(e.graduationDate) : '') + '</b></div>';
+    });
+    html += '</div>';
+
+    html += '<div class="step-review-block"><h3>Employment (' + data.employment.length + ')</h3>';
+    if (data.employment.length === 0) html += '<div class="kv"><span>No entries added</span></div>';
+    data.employment.forEach(function(e) {
+      html += '<div class="kv"><span>' + escapeHtml(e.company || '—') + ' · ' + escapeHtml(e.title || '—') + '</span><b>' + escapeHtml(e.start || '?') + ' – ' + escapeHtml(e.end || 'Current') + '<br/>' + escapeHtml(e.city || '—') + ', ' + escapeHtml(e.country || '—') + (e.reasonForLeaving ? '<br/>Left: ' + escapeHtml(e.reasonForLeaving) : '') + (e.reasonForLeavingDetail ? '<br/>' + escapeHtml(e.reasonForLeavingDetail) : '') + '</b></div>';
+    });
+    html += '</div>';
+
+    area.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
+  }
+
+  document.getElementById('backBtn').addEventListener('click', function() {
+    if (currentStep > 0) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', async function() {
+    var btn = this;
+    btn.disabled = true;
+    if (currentStep === 1) btn.textContent = 'Checking…';
+
+    var ok = await validateStep(currentStep);
+
+    if (!ok) {
+      btn.disabled = false;
+      btn.textContent = (currentStep === TOTAL_STEPS - 1) ? 'Submit response' : 'Continue';
+      return;
+    }
+
+    if (currentStep === TOTAL_STEPS - 1) {
+      await submitForm();
+      return;
+    }
+
+    btn.disabled = false;
+    currentStep++;
+    if (currentStep === TOTAL_STEPS - 1) renderReview();
+    showStep(currentStep);
+  });
+
+  function genId() {
+    return 'P' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  async function submitForm() {
+    var data = collectData();
+    var anonId = genId();
+    var btn = document.getElementById('nextBtn');
+    btn.textContent = 'Submitting…';
+
+    var payload = {
+      action: 'submit',
+      anonId: anonId,
+      fullName: data.fullName,
+      email: data.email,
+      status: data.status,
+      isOwnerOrShareholder: data.isOwnerOrShareholder,
+      birthYear: data.dateOfBirth,
+      gender: data.gender,
+      notes: data.notes,
+      lastReasonForLeaving: lastReasonForLeaving(data.employment),
+      lastReasonForLeavingDetail: lastReasonForLeavingDetail(data.employment),
+      education: data.education,
+      employment: data.employment
+    };
+
+    try {
+      var json = await postWithRetry(payload);
+      if (json && json.ok) {
+        showConfirmation(anonId, true);
+      } else if (json && json.error === 'duplicate_email') {
+        showConfirmation(anonId, false, 'This email has already submitted a response.');
+      } else {
+        showConfirmation(anonId, false);
+      }
+    } catch (e) {
+      showConfirmation(anonId, false);
+    }
+  }
+
+  function delay_(ms) {
+    return new Promise(function(resolve) { setTimeout(resolve, ms); });
+  }
+
+  async function postWithRetry(payload) {
+    for (var attempt = 0; attempt < 2; attempt++) {
+      var res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      var json = await res.json();
+      if (json && json.error === 'busy_please_retry' && attempt === 0) {
+        await delay_(1500);
+        continue;
+      }
+      return json;
+    }
+  }
+
+  function lastReasonForLeaving(employment) {
+    if (!employment || !employment.length) return '';
+    for (var i = employment.length - 1; i >= 0; i--) {
+      if (employment[i].reasonForLeaving) return employment[i].reasonForLeaving;
+    }
+    return '';
+  }
+
+  function lastReasonForLeavingDetail(employment) {
+    if (!employment || !employment.length) return '';
+    for (var i = employment.length - 1; i >= 0; i--) {
+      if (employment[i].reasonForLeavingDetail) return employment[i].reasonForLeavingDetail;
+    }
+    return '';
+  }
+
+  function showConfirmation(id, saved, customMsg) {
+    document.getElementById('surveyForm').style.display = 'none';
+    document.getElementById('navRow').style.display = 'none';
+    var area = document.getElementById('confirmArea');
+    area.style.display = 'block';
+    var msg = customMsg || (saved ? 'Your response has been recorded securely.' : 'Your response was prepared, but we could not confirm it saved — please let the researcher know.');
+    area.innerHTML =
+      '<div class="confirm-wrap">' +
+        '<div class="confirm-mark">&#10003;</div>' +
+        '<h2>' + (saved ? 'Thanks for contributing' : 'Something needs your attention') + '</h2>' +
+        '<p class="lead" style="margin:0 auto;">' + escapeHtml(msg) + '</p>' +
+        (saved ? '<div class="confirm-id">' + id + '</div>' : '') +
+      '</div>';
+  }
+
+  showStep(0);
+})();
+</script>
+</body>
+</html>
